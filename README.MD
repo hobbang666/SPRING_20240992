@@ -14,6 +14,12 @@ A few resources to get you started if this is your first Flutter project:
 
 - 실행 및 깃 허브 연동 확인 완료!
 
+## DAY 1 - 2주차 연습문제
+
+- hello 페이지 링크를 수정하여 hello2 페이지 생성후 하이퍼링크로 이동하게 설정!
+
+-5개의 속성을 추가하여 속성 변수 출력
+
 ## DAY 2 - 환경설정 및 깃 허브 연동, C# 기초 살펴보기
 
 - 홈페이지 코드를 가져와서 프로필 사진 변경, 자기소개 작성, about_detailed를 통해 상세 페이지로 이동 설정!
