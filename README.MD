@@ -29,3 +29,7 @@ A few resources to get you started if this is your first Flutter project:
 - 상세소개 페이지 하단에 되돌아가기 버튼 추가 후, 클릭하면 웹 페이지를 닫는 기능
 
 - main.js에 confirmClose() 함수 추가!
+
+## DAY 3 - database생성 후 값 입력
+
+- mysql을 통해 db를 만들고 1, 홍길동 값 입력 완료!
