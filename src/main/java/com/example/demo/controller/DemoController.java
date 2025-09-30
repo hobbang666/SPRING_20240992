@@ -50,9 +50,17 @@ public class DemoController {
     // 하단에 맵핑 이어서 추가
     @GetMapping("/testdb")
     public String getAllTestDBs(Model model) {
-        TestDB test = testService.findByName("홍길동");
-        model.addAttribute("data4", test);
-        System.out.println("데이터 출력 디버그 : " + test);
+        TestDB test1 = testService.findByName("홍길동");
+        model.addAttribute("data4", test1);
+        System.out.println("데이터 출력 디버그 : " + test1);
+
+        TestDB test2 = testService.findByName("아저씨");
+        model.addAttribute("data5", test2);
+        System.out.println("데이터 출력 디버그 : " + test2);
+
+        TestDB test3 = testService.findByName("꾸러기");
+        model.addAttribute("data6", test3);
+        System.out.println("데이터 출력 디버그 : " + test3);
         return "testdb";
     }
 }

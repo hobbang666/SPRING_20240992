@@ -33,3 +33,7 @@ A few resources to get you started if this is your first Flutter project:
 ## DAY 3 - database생성 후 값 입력
 
 - mysql을 통해 db를 만들고 1, 홍길동 값 입력 완료!
+
+## DAY 3 - 연습문제
+
+- 홍길동 외의 아저씨와 꾸러기를 출력!
