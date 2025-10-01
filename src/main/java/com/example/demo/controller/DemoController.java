@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.model.domain.TestDB;
 import com.example.demo.model.service.TestService; // 최상단 서비스 클래스 연동 추가
@@ -63,4 +62,5 @@ public class DemoController {
         System.out.println("데이터 출력 디버그 : " + test3);
         return "testdb";
     }
+
 }

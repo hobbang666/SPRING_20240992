@@ -1,7 +1,11 @@
 package com.example.demo.model.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.example.demo.model.domain.Article;
 import com.example.demo.model.domain.TestDB;
 import com.example.demo.model.repository.TestRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,5 +18,10 @@ public class TestService {
 
     public TestDB findByName(String name) { // 이름 찾기
         return (TestDB) testRepository.findByName(name);
+    }
+
+    public List<Article> findAll() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
     }
 }
