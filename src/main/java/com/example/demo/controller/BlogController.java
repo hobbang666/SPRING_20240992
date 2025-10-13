@@ -6,9 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.example.demo.model.domain.Article;
 import com.example.demo.model.service.BlogService; // 최상단 서비스 클래스 연동 추가
+import com.example.demo.model.service.AddArticleRequest;
 
 @Controller // 컨트롤러 어노테이션 명시
 public class BlogController {
@@ -21,5 +24,11 @@ public class BlogController {
         List<Article> list = blogService.findAll(); // 게시판 리스트
         model.addAttribute("articles", list); // 모델에 추가
         return "article_list"; // .HTML 연결
+    }
+
+    @PostMapping("/articles")
+    public String addArticle(@ModelAttribute AddArticleRequest request) {
+        blogService.save(request); // 글 저장
+        return "redirect:/article_list"; // 저장 후 목록으로 리다이렉트
     }
 }

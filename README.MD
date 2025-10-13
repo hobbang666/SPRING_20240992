@@ -41,3 +41,7 @@ A few resources to get you started if this is your first Flutter project:
 ## DAY 4 - 게시판 생성 후 글쓰기
 
 - 게시판 article_list를 만들어 글쓴게 게시판에 올라가는 기능 제작!
+
+## DAY 4 - 연습문제 
+
+- json으로 처리되어 검은화면이 나타나던걸 게시판으로 돌아가도록 수정!
