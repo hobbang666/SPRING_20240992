@@ -45,3 +45,7 @@ A few resources to get you started if this is your first Flutter project:
 ## DAY 4 - 연습문제 
 
 - json으로 처리되어 검은화면이 나타나던걸 게시판으로 돌아가도록 수정!
+
+## DAY 5 - 게시글 수정/삭제 에러페이지 추가
+
+- 수정 기능을 구현, 삭제 기능을 구현, 에러 페이지까지 구현 완료!
