@@ -49,3 +49,7 @@ A few resources to get you started if this is your first Flutter project:
 ## DAY 5 - 게시글 수정/삭제 에러페이지 추가
 
 - 수정 기능을 구현, 삭제 기능을 구현, 에러 페이지까지 구현 완료!
+
+## DAY 5 - 연습문제
+
+- 문자열로 입력시 문자열 에러 페이지로 이동하도록 구현 완료!

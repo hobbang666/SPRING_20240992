@@ -16,6 +16,7 @@ import java.util.Optional;
 import com.example.demo.model.domain.Article;
 import com.example.demo.model.service.BlogService; // 최상단 서비스 클래스 연동 추가
 import com.example.demo.model.service.AddArticleRequest;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @Controller // 컨트롤러 어노테이션 명시
 public class BlogController {
@@ -58,5 +59,11 @@ public class BlogController {
     public String deleteArticle(@PathVariable Long id) {
         blogService.delete(id);
         return "redirect:/article_list";
+    }
+
+    @ExceptionHandler(Exception.class)
+    public String handleException(Exception e, Model model) {
+        model.addAttribute("errorMessage", e.getMessage());
+        return "/error_page/article_error2";
     }
 }
