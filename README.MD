@@ -53,3 +53,7 @@ A few resources to get you started if this is your first Flutter project:
 ## DAY 5 - 연습문제
 
 - 문자열로 입력시 문자열 에러 페이지로 이동하도록 구현 완료!
+
+## DAY 6 - 새로운 페이지 추가 후 여러 필드 구현
+
+- board_list.html을 새로 만들고 좋아요 조회수 작성시간 등 여러 필드를 구현!
