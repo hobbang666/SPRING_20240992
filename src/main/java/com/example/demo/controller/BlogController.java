@@ -86,4 +86,21 @@ public class BlogController {
         return "/error_page/article_error2";
     }
 
+    @GetMapping("/board_edit/{id}")
+    public String board_edit(Model model, @PathVariable Long id) {
+        Optional<Board> board = blogService.findByIdBoard(id);
+        if (board.isPresent()) {
+            model.addAttribute("board", board.get());
+        } else {
+            return "error_page/article_error";
+        }
+        return "board_edit";
+    }
+
+    @PutMapping("/api/board_edit/{id}")
+    public String updateBoard(@PathVariable Long id, @ModelAttribute Board request) {
+        blogService.updateBoard(id, request);
+        return "redirect:/board_list";
+    }
+
 }

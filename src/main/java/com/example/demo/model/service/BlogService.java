@@ -45,10 +45,12 @@ public class BlogService {
     }
 
     public void update(Long id, AddArticleRequest request) {
-        Optional<Article> optionalArticle = blogRepository.findById(id); // 단일 글 조회
-        optionalArticle.ifPresent(article -> { // 값이 있으면
-            article.update(request.getTitle(), request.getContent()); // 값을 수정
-            blogRepository.save(article); // Article 객체에 저장
+        Optional<Article> optionalArticle = blogRepository.findById(id);
+        optionalArticle.ifPresent(article -> {
+            article.update(
+                    request.getTitle(),
+                    request.getContent());
+            blogRepository.save(article);
         });
     }
 
@@ -56,4 +58,17 @@ public class BlogService {
         blogRepository.deleteById(id);
     }
 
+    public void updateBoard(Long id, Board request) {
+        Optional<Board> optionalBoard = boardRepository.findById(id);
+        optionalBoard.ifPresent(board -> {
+            board.update(
+                    request.getTitle(),
+                    request.getContent(),
+                    request.getUser(),
+                    request.getNewdate(),
+                    request.getCount(),
+                    request.getLikec());
+            boardRepository.save(board);
+        });
+    }
 }

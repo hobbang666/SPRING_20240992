@@ -57,3 +57,7 @@ A few resources to get you started if this is your first Flutter project:
 ## DAY 6 - 새로운 페이지 추가 후 여러 필드 구현
 
 - board_list.html을 새로 만들고 좋아요 조회수 작성시간 등 여러 필드를 구현!
+
+## DAY 7 - board_list의 수정기능 구현
+
+- 수정기능을 구현하여 수정 즉시 반영되도록 제작!
