@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 import com.example.demo.model.repository.BoardRepository;
 import com.example.demo.model.domain.Board;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor // 생성자 자동 생성(부분)
@@ -25,15 +27,9 @@ public class BlogService {
         return boardRepository.findAll();
     }
 
-    public Article save(AddArticleRequest request) {
+    public Board save(AddArticleRequest request) {
         // DTO가 없는 경우 이곳에 직접 구현 가능
-        // public ResponseEntity<Article> addArticle(@RequestParam String title,
-        // @RequestParam String content) {
-        // Article article = Article.builder()
-        // .title(title)
-        // .content(content)
-        // .build();
-        return blogRepository.save(request.toEntity());
+        return boardRepository.save(request.toEntity());
     }
 
     public Optional<Article> findById(Long id) { // 게시판 특정 글 조회
@@ -71,4 +67,13 @@ public class BlogService {
             boardRepository.save(board);
         });
     }
+
+    public Page<Board> findAll(Pageable pageable) {
+        return boardRepository.findAll(pageable);
+    }
+
+    public Page<Board> searchByKeyword(String keyword, Pageable pageable) {
+        return boardRepository.findByTitleContainingIgnoreCase(keyword, pageable);
+    } // LIKE 검색 제공(대소문자 무시)
+
 }
