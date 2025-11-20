@@ -62,6 +62,16 @@ A few resources to get you started if this is your first Flutter project:
 
 - 수정기능을 구현하여 수정 즉시 반영되도록 제작!
 
+## DAY 7 - 연습문제 
+
+- 서비스 로직 수정
+
 ## DAY 8 - 글쓰기, 검색기능, 페이지 넘기기 기능 구현
 
 - 글을 작성하는 기능과 검색 기능 그리고 한 페이지에 용량을 제한하고 다음 페이지로 넘기게 구현!
+
+## DAY 8 - 연습문제 
+
+- id를 글 번호로 출력하게 수정, board_view의 삭제 기능도 구현
+
+

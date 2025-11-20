@@ -76,4 +76,8 @@ public class BlogService {
         return boardRepository.findByTitleContainingIgnoreCase(keyword, pageable);
     } // LIKE 검색 제공(대소문자 무시)
 
+    public void deleteBoard(Long id) {
+        boardRepository.deleteById(id);
+    }
+
 }
