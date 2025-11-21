@@ -9,6 +9,8 @@ import com.example.demo.model.service.Member_Service;
 import lombok.RequiredArgsConstructor;
 import com.example.demo.model.domain.Member;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import jakarta.validation.Valid;
 
 @Controller // 컨트롤러 어노테이션 명시
 @RequiredArgsConstructor
@@ -21,8 +23,19 @@ public class MemberController {
     }
 
     @PostMapping("/api/members") // 회원 가입 저장
-    public String addmembers(@ModelAttribute AddMemberRequest request) {
-        memberService.saveMember(request);
+    public String addmembers(@Valid @ModelAttribute AddMemberRequest request, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            // 유효성 검증에 실패하면, 오류 정보를 담고 다시 회원가입 페이지를 반환 (리다이렉트 없이)
+            return "join_new";
+        }
+        try {
+            memberService.saveMember(request);
+        } catch (IllegalStateException e) {
+            // 예: 이메일 중복 오류를 BindingResult에 추가
+            bindingResult.rejectValue("email", "duplicate.email", e.getMessage());
+            return "join_new";
+        }
         return "join_end"; // .HTML 연결
     }
 

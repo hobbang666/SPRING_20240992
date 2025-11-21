@@ -78,4 +78,6 @@ A few resources to get you started if this is your first Flutter project:
 
 - 회원가입 후 데이터베이스에 저장한 후 로그인 후 게시판으로 이동 확인
 
+## DAY 9 - 연습문제
 
+- 유효성 검증 기능을 추가해서 조건 미충족시 페이지 재반환

@@ -6,10 +6,14 @@ import com.example.demo.model.domain.Member;
 import com.example.demo.model.repository.Member_Repository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import jakarta.transaction.Transactional;
+import org.springframework.validation.annotation.Validated;
+
+import jakarta.validation.Valid;
 
 @Service
 @Transactional // 트랜잭션 처리(클래스 내 모든 메소드 대상)
 @RequiredArgsConstructor
+@Validated
 public class Member_Service {
     private final Member_Repository memberRepository;
     private final PasswordEncoder passwordEncoder; // 스프링 버전 5 이후, 단방향 해싱 알고리즘 지원
@@ -21,7 +25,7 @@ public class Member_Service {
         }
     }
 
-    public Member saveMember(AddMemberRequest request) {
+    public Member saveMember(@Valid AddMemberRequest request) {
         validateDuplicateMember(request); // 이메일 체크
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         request.setPassword(encodedPassword); // 암호화된 비밀번호 설정
