@@ -74,4 +74,8 @@ A few resources to get you started if this is your first Flutter project:
 
 - id를 글 번호로 출력하게 수정, board_view의 삭제 기능도 구현
 
+## DAY 9 - 회원가입 로그인 로그아웃 기능 구현
+
+- 회원가입 후 데이터베이스에 저장한 후 로그인 후 게시판으로 이동 확인
+
 

@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.domain.Article;
+import com.example.demo.model.domain.Board;
 import com.example.demo.model.service.AddArticleRequest;
 import com.example.demo.model.service.BlogService;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +14,9 @@ public class BlogRestController {
     private final BlogService blogService;
 
     @PostMapping("/api/articles") // post 요청
-    public ResponseEntity<Article> addArticle(@ModelAttribute AddArticleRequest request) { // 아직 없음(에러)
-        Article saveArticle = blogService.save(request); // 게시글 저장
-        return ResponseEntity.status(HttpStatus.CREATED) // 상태 코드 및 게시글 정보 반환
+    public ResponseEntity<Board> addArticle(@ModelAttribute AddArticleRequest request) { // Article -> Board
+        Board saveArticle = blogService.save(request); // Article -> Board
+        return ResponseEntity.status(HttpStatus.CREATED) // 성공 코드 및 게시글 정보 반환
                 .body(saveArticle);
     }
 
