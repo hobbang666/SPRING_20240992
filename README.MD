@@ -81,3 +81,7 @@ A few resources to get you started if this is your first Flutter project:
 ## DAY 9 - 연습문제
 
 - 유효성 검증 기능을 추가해서 조건 미충족시 페이지 재반환
+
+## DAY 10 - 보안 기능 구현
+
+- 보안 기능을 구현하여 세션 변경 등의 기능을 확인

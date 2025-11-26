@@ -16,6 +16,9 @@ import java.util.Optional;
 import com.example.demo.model.domain.Board; // Board 도메인 추가
 import com.example.demo.model.domain.Article;
 import com.example.demo.model.service.BlogService; // 최상단 서비스 클래스 연동 추가
+
+import jakarta.servlet.http.HttpSession;
+
 import com.example.demo.model.service.AddArticleRequest;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.data.domain.Page;
@@ -43,9 +46,17 @@ public class BlogController {
     // }
 
     @GetMapping("/board_list") // 새로운 게시판 링크 지정
-    public String board_list(Model model, @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "") String keyword) {
+    public String board_list(Model model,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "") String keyword, HttpSession session) {
         int pageSize = 3;
+        String userId = (String) session.getAttribute("userId"); // 세션 아이디 존재 확인
+        String email = (String) session.getAttribute("email"); // 세션에서 이메일 확인
+
+        if (userId == null) {
+            return "redirect:/member_login"; // 로그인 페이지로 리다이렉션
+        }
+        System.out.println("세션 userId: " + userId); // 서버 IDE 터미널에 세션 값 출력
         PageRequest pageable = PageRequest.of(page, pageSize); // 한 페이지의 게시글 수
         Page<Board> list; // Page를 반환
         if (keyword.isEmpty()) {
@@ -55,6 +66,7 @@ public class BlogController {
         }
         int startNum = (page * pageSize) + 1;
         model.addAttribute("startNum", startNum);
+        model.addAttribute("email", email); // 로그인 사용자(이메일)
         model.addAttribute("boards", list); // 모델에 추가
         model.addAttribute("totalPages", list.getTotalPages()); // 페이지 크기
         model.addAttribute("currentPage", page); // 페이지 번호
