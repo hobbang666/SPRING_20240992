@@ -16,13 +16,11 @@ import java.util.Optional;
 import com.example.demo.model.domain.Board; // Board 도메인 추가
 import com.example.demo.model.domain.Article;
 import com.example.demo.model.service.BlogService; // 최상단 서비스 클래스 연동 추가
-
-import jakarta.servlet.http.HttpSession;
-
 import com.example.demo.model.service.AddArticleRequest;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller // 컨트롤러 어노테이션 명시
 public class BlogController {
@@ -46,17 +44,21 @@ public class BlogController {
     // }
 
     @GetMapping("/board_list") // 새로운 게시판 링크 지정
-    public String board_list(Model model,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "") String keyword, HttpSession session) {
-        int pageSize = 3;
-        String userId = (String) session.getAttribute("userId"); // 세션 아이디 존재 확인
-        String email = (String) session.getAttribute("email"); // 세션에서 이메일 확인
+    public String board_list(Model model, @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "") String keyword, jakarta.servlet.http.HttpSession session) {
+
+        // 👈 2. 세션 값 가져오기 및 3. 로그인 체크 로직 추가
+        String userId = (String) session.getAttribute("userId");
+        String email = (String) session.getAttribute("email");
 
         if (userId == null) {
-            return "redirect:/member_login"; // 로그인 페이지로 리다이렉션
+            // 로그인하지 않은 경우 로그인 페이지로 리다이렉트 (필수)
+            return "redirect:/member_login";
         }
-        System.out.println("세션 userId: " + userId); // 서버 IDE 터미널에 세션 값 출력
+
+        // 👈 4. 모델에 email 값을 추가합니다. (화면 출력용)
+        model.addAttribute("email", email);
+        int pageSize = 3;
         PageRequest pageable = PageRequest.of(page, pageSize); // 한 페이지의 게시글 수
         Page<Board> list; // Page를 반환
         if (keyword.isEmpty()) {
@@ -66,7 +68,6 @@ public class BlogController {
         }
         int startNum = (page * pageSize) + 1;
         model.addAttribute("startNum", startNum);
-        model.addAttribute("email", email); // 로그인 사용자(이메일)
         model.addAttribute("boards", list); // 모델에 추가
         model.addAttribute("totalPages", list.getTotalPages()); // 페이지 크기
         model.addAttribute("currentPage", page); // 페이지 번호
@@ -75,13 +76,21 @@ public class BlogController {
     }
 
     @GetMapping("/board_view/{id}") // 게시판 링크 지정
-    public String board_view(Model model, @PathVariable Long id) {
+    public String board_view(Model model, @PathVariable Long id, jakarta.servlet.http.HttpSession session) {
+
+        String email = (String) session.getAttribute("email");
+
+        if (email == null) {
+            return "redirect:/member_login";
+        }
+        model.addAttribute("email", email);
+
         Optional<Board> list = blogService.findByIdBoard(id); // 선택한 게시판 글
         if (list.isPresent()) {
-            model.addAttribute("boards", list.get()); // 존재할 경우 실제 Board 객체를 모델에 추가
+            // 기존 코드에서는 단일 Board 객체를 "boards"라는 이름으로 전달하고 있음
+            model.addAttribute("boards", list.get());
         } else {
-            // 처리할 로직 추가 (예: 오류 페이지로 리다이렉트, 예외 처리 등)
-            return "/error_page/article_error"; // 오류 처리 페이지로 연결
+            return "/error_page/article_error";
         }
         return "board_view"; // .HTML 연결
     }
@@ -144,10 +153,37 @@ public class BlogController {
         return "board_write";
     }
 
-    @PostMapping("/api/boards") // 글쓰기 게시판 저장
-    public String addboards(@ModelAttribute AddArticleRequest request) {
+    @PostMapping("/api/boards")
+    public String addboards(@ModelAttribute AddArticleRequest request,
+            jakarta.servlet.http.HttpSession session) {
+
+        String email = (String) session.getAttribute("email");
+
+        if (email == null) {
+            return "redirect:/member_login";
+        }
+
+        // 1. user/email 필드 설정
+        request.setUser(email);
+        request.setEmail(email);
+
+        // 2. address 필드에 기본값 설정
+        if (request.getAddress() == null || request.getAddress().isEmpty()) {
+            request.setAddress("미등록 주소");
+        }
+
+        // 3. age 필드에 기본값 설정
+        request.setAge(30L);
+
+        // 4. mobile/name 필드에 기본값 설정
+        request.setMobile("000-0000-0000");
+        request.setName("익명 작성자");
+
+        // 🌟 5. password 필드에 기본값 설정 🌟 (마지막 필수 필드)
+        request.setPassword("dummy_password_1234");
+
         blogService.save(request);
-        return "redirect:/board_list"; // .HTML 연결
+        return "redirect:/board_list";
     }
 
     @DeleteMapping("/api/board_delete/{id}")

@@ -7,13 +7,20 @@ import com.example.demo.model.domain.Board;
 @NoArgsConstructor // 기본 생성자 추가
 @AllArgsConstructor // 모든 필드 값을 파라미터로 받는 생성자 추가
 @Data // getter, setter, toString, equals 등 자동 생성
+
 public class AddArticleRequest {
     private String title;
     private String content;
     private String user;
     private String newdate;
-    private String count;
-    private String likec;
+    private Long count;
+    private Long likec;
+    private String address;
+    private Long age;
+    private String mobile;
+    private String name;
+    private String email;
+    private String password;
 
     // public Article toEntity() { // Article 객체 생성
     // return Article.builder()
@@ -30,6 +37,12 @@ public class AddArticleRequest {
                 .newdate(newdate)
                 .count(count)
                 .likec(likec)
+                .age(age)
+                .address(address)
+                .mobile(mobile)
+                .name(name)
+                .email(email)
+                .password(password)
                 .build();
     }
 }

@@ -55,16 +55,35 @@ public class BlogService {
     }
 
     public void updateBoard(Long id, Board request) {
+        // 원본 게시글을 DB에서 불러옵니다.
         Optional<Board> optionalBoard = boardRepository.findById(id);
-        optionalBoard.ifPresent(board -> {
-            board.update(
-                    request.getTitle(),
-                    request.getContent(),
-                    request.getUser(),
-                    request.getNewdate(),
-                    request.getCount(),
-                    request.getLikec());
-            boardRepository.save(board);
+
+        optionalBoard.ifPresent(originalBoard -> {
+
+            // 1. request에서 받은 title과 content를 사용합니다.
+            // 만약 title/content가 null이면 (수정 폼에 없었다면) 원본 값을 사용합니다.
+            String updatedTitle = request.getTitle() != null ? request.getTitle() : originalBoard.getTitle();
+            String updatedContent = request.getContent() != null ? request.getContent() : originalBoard.getContent();
+
+            // 2. originalBoard.update() 호출 시,
+            // 수정되는 필드(title, content)를 제외한 모든 필수 필드는
+            // 원본(originalBoard)에서 가져와 재주입합니다.
+            originalBoard.update(
+                    updatedTitle,
+                    updatedContent,
+                    originalBoard.getUser(), // 원본 값 유지
+                    originalBoard.getNewdate(), // 원본 값 유지
+                    originalBoard.getCount(), // 원본 값 유지
+                    originalBoard.getLikec(), // 원본 값 유지
+                    originalBoard.getAge(), // 원본 값 유지
+                    originalBoard.getAddress(), // 원본 값 유지 (오류 해결)
+                    originalBoard.getMobile(), // 원본 값 유지
+                    originalBoard.getName(), // 원본 값 유지
+                    originalBoard.getEmail(), // 원본 값 유지
+                    originalBoard.getPassword() // 원본 값 유지
+            );
+
+            boardRepository.save(originalBoard);
         });
     }
 

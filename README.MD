@@ -85,3 +85,7 @@ A few resources to get you started if this is your first Flutter project:
 ## DAY 10 - 보안 기능 구현
 
 - 보안 기능을 구현하여 세션 변경 등의 기능을 확인
+
+## DAY 10 - 수정.삭제 기능 구현
+
+- 본인이 쓴 게시글만 수정/삭제 할수 있는 기능을 구현

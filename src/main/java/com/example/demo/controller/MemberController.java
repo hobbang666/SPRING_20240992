@@ -87,12 +87,18 @@ public class MemberController {
             cookie.setPath("/"); // 쿠키의 경로
             cookie.setMaxAge(0); // 쿠키 만료 0이면 삭제
             response.addCookie(cookie); // 응답에 쿠키 설정
-            session = request2.getSession(true); // 새로운 세션 생성
-            System.out.println("세션 userId: " + session.getAttribute("userId")); // 초기화 후 IDE 터미널에 세션 값 출력
+            // session = request2.getSession(true); // 새로운 세션 생성
+            // System.out.println("세션 userId: " + session.getAttribute("userId")); // 초기화 후
+            // IDE 터미널에 세션 값 출력
             return "login"; // 로그인 페이지로 리다이렉트
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage()); // 에러 메시지 전달
             return "login"; // 로그인 실패 시 로그인 페이지로 리다이렉트
         }
+    }
+
+    @GetMapping("/session-expired")
+    public String sessionExpired() {
+        return "session_expired"; // templates/session_expired.html 페이지가 필요
     }
 }
