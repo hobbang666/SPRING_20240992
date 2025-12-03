@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>잘못된 접근</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .error-container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 40px;
+            border: 1px solid #dc3545;
+            border-radius: 10px;
+            background-color: #f8d7da;
+            text-align: center;
+        }
+
+        .error-title {
+            color: #721c24;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            color: #721c24;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="error-container">
+            <h1 class="error-title">잘못된 파일 접근 또는 처리 오류</h1>
+            <!-- 컨트롤러에서 전달받은 오류 메시지를 출력합니다. -->
+            <p class="error-message" th:text="${message}">요청하신 게시글을 찾을 수 없거나, 접근 권한이 없습니다.</p>
+            <button type="button" class="btn btn-danger btn-lg" onclick="history.back()">이전 페이지로 돌아가기</button>
+        </div>
+    </div>
+</body>
+
+</html>

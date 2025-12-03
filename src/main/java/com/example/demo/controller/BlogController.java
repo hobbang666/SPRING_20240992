@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
 import java.util.List;
-
+import java.io.File; // 파일 처리 import
+import java.io.IOException; // 입출력 예외 import
+import java.util.UUID; // 고유 ID 생성 import
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +22,8 @@ import com.example.demo.model.service.AddArticleRequest;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.web.multipart.MultipartFile; // 파일 처리 import
+import org.springframework.web.servlet.mvc.support.RedirectAttributes; // 리다이렉트 속성 import
 
 @Controller // 컨트롤러 어노테이션 명시
 public class BlogController {
@@ -27,20 +31,15 @@ public class BlogController {
     @Autowired
     BlogService blogService; // DemoController 클래스 아래 객체 생성
 
+    // 파일 저장 경로 (실제 환경에 맞게 변경 필요. 반드시 존재하는 폴더여야 합니다.)
+    private final String UPLOAD_DIR = "C:/uploads/";
+
     @GetMapping("/article_list") // 게시판 링크 지정
     public String article_list(Model model) {
         List<Article> list = blogService.findAll(); // 게시판 리스트
         model.addAttribute("articles", list); // 모델에 추가
         return "article_list"; // .HTML 연결
     }
-
-    // @GetMapping("/board_list") // 새로운 게시판 링크 지정
-    // public String board_list(Model model) {
-    // List<Board> list = blogService.findAllBoard(); // 게시판 전체 리스트, 기존 Article에서
-    // Board로 변경됨
-    // model.addAttribute("boards", list); // 모델에 추가
-    // return "board_list"; // .HTML 연결
-    // }
 
     @GetMapping("/board_list") // 새로운 게시판 링크 지정
     public String board_list(Model model, @RequestParam(defaultValue = "0") int page,
@@ -152,36 +151,88 @@ public class BlogController {
         return "board_write";
     }
 
+    // 🚨 파일 업로드 로직이 통합된 게시글 추가 메서드 🚨
     @PostMapping("/api/boards")
-    public String addboards(@ModelAttribute AddArticleRequest request,
-            jakarta.servlet.http.HttpSession session) {
+    public String addboards(
+            @ModelAttribute AddArticleRequest request,
+            @RequestParam("files") List<MultipartFile> files, // HTML의 name="files"를 받음
+            jakarta.servlet.http.HttpSession session,
+            RedirectAttributes redirectAttributes) { // 에러 메시지 전달용 추가
 
         String email = (String) session.getAttribute("email");
+        Long newBoardId = 0L; // 게시글 ID를 저장할 변수 초기화 (DB 저장 후 실제 ID로 변경 필요)
 
         if (email == null) {
             return "redirect:/member_login";
         }
 
-        // 1. user/email 필드 설정
-        request.setUser(email);
-        request.setEmail(email);
+        try {
+            // 1. 텍스트 데이터 처리 (기존 로직)
+            request.setUser(email);
+            request.setEmail(email);
+            if (request.getAddress() == null || request.getAddress().isEmpty()) {
+                request.setAddress("미등록 주소");
+            }
+            request.setAge(30L);
+            request.setMobile("000-0000-0000");
+            request.setName("익명 작성자");
+            request.setPassword("dummy_password_1234");
 
-        // 2. address 필드에 기본값 설정
-        if (request.getAddress() == null || request.getAddress().isEmpty()) {
-            request.setAddress("미등록 주소");
+            // 2. 게시글 저장 (여기서 newBoardId를 실제 DB ID로 업데이트해야 함)
+            blogService.save(request); // 이 메서드가 Board 객체를 DB에 저장하고 ID를 반환해야 합니다.
+            // newBoardId = blogService.saveAndGetId(request); // 실제 구현 시 이렇게 변경되어야 함
+            newBoardId = 1L; // 임시 ID 사용
+
+            // 3. 파일 업로드 로직 (2개 파일 처리, 이름 충돌 방지, 에러 처리)
+            for (MultipartFile file : files) {
+                if (file.isEmpty()) {
+                    continue; // 파일이 선택되지 않았으면 건너뜀
+                }
+
+                // 3-1. 파일 크기 초과 에러 처리 (5MB 제한 예시)
+                if (file.getSize() > 5 * 1024 * 1024) {
+                    throw new FileUploadException("파일 크기가 5MB를 초과했습니다: " + file.getOriginalFilename());
+                }
+
+                // 3-2. 동일 파일 업로드 시 다른 이름으로 저장 (UUID 사용)
+                String originalFilename = file.getOriginalFilename();
+                String fileExtension = "";
+                if (originalFilename != null && originalFilename.contains(".")) {
+                    fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                }
+                String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
+
+                // 3-3. 파일 저장
+                File targetFile = new File(UPLOAD_DIR, uniqueFileName);
+                if (!targetFile.getParentFile().exists()) {
+                    targetFile.getParentFile().mkdirs(); // 폴더가 없으면 생성
+                }
+                file.transferTo(targetFile);
+
+                // 3-4. DB에 파일 정보 저장 (글 ID, 원본 파일명, 저장된 파일명 등을 저장하는 서비스 로직 필요)
+                // fileService.saveFileInfo(newBoardId, originalFilename, uniqueFileName,
+                // targetFile.getAbsolutePath());
+            }
+
+        } catch (FileUploadException e) {
+            // 파일 업로드 관련 오류 처리
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/uploadError"; // 에러 페이지로 리다이렉트
+
+        } catch (IOException e) {
+            // 파일 저장 중 입출력 오류 처리
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "파일 저장 중 시스템 오류가 발생했습니다.");
+            return "redirect:/uploadError";
+
+        } catch (Exception e) {
+            // 기타 게시글 처리 중 발생한 오류
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "게시글 작성 중 알 수 없는 오류가 발생했습니다.");
+            return "redirect:/uploadError";
         }
 
-        // 3. age 필드에 기본값 설정
-        request.setAge(30L);
-
-        // 4. mobile/name 필드에 기본값 설정
-        request.setMobile("000-0000-0000");
-        request.setName("익명 작성자");
-
-        // 🌟 5. password 필드에 기본값 설정 🌟 (마지막 필수 필드)
-        request.setPassword("dummy_password_1234");
-
-        blogService.save(request);
+        // 4. 성공 시 게시글 목록으로 리다이렉트
         return "redirect:/board_list";
     }
 
@@ -191,4 +242,24 @@ public class BlogController {
         return "redirect:/board_list";
     }
 
+    // 🌟🌟🌟 새로운 GET 매핑 추가: 파일 업로드 에러 페이지 핸들러 🌟🌟🌟
+    @GetMapping("/uploadError")
+    public String handleError(Model model, @ModelAttribute("errorMessage") String errorMessage) {
+        // 리다이렉트 시 전달된 errorMessage가 없으면 기본 메시지 설정
+        if (errorMessage == null || errorMessage.isEmpty()) {
+            errorMessage = "잘못된 파일 접근 또는 처리 오류입니다.";
+        }
+
+        model.addAttribute("message", errorMessage);
+        // "uploadErrorPage"라는 뷰(HTML 파일)를 찾습니다.
+        return "uploadErrorPage";
+    }
+    // 🌟🌟🌟 ------------------------------------------------ 🌟🌟🌟
+
+    // 파일 업로드 전용 예외 클래스 (컨트롤러 내부에 정의)
+    private static class FileUploadException extends Exception {
+        public FileUploadException(String message) {
+            super(message);
+        }
+    }
 }
