@@ -20,7 +20,6 @@ import com.example.demo.model.service.AddArticleRequest;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import jakarta.servlet.http.HttpSession;
 
 @Controller // 컨트롤러 어노테이션 명시
 public class BlogController {
